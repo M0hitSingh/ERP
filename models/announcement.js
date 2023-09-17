@@ -6,6 +6,7 @@ const announcementSchema = new schema({
   time:String,
   description:String,
   annfor:String,
+  madeby:String
 },{
   timestamps: true
 })

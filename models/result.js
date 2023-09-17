@@ -10,7 +10,8 @@ const resultSchema = new schema({
     sem: Number,
     exam: String,
     subject: String,
-    score: Number
+    score: Number,
+    maxmarks:Number
   }],
   percentage:{
     type:Number

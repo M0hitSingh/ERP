@@ -9,8 +9,8 @@ const isAuth = require("../middleware/isAuth");
 router.post("/attendance",isAuth,facultyController.addAttendance);
 router.post("/results",isAuth,facultyController.addresults);
 router.get("/viewscores/:batch/:sub",isAuth,facultyController.viewScores);
-router.post("/makeannouncement/:id",facultyController.makeAnnouncements);
-router.delete("/deleteannouncement/:annid/:facid",facultyController.deleteAnnouncements);
+router.post("/makeannouncement/:id",isAuth,facultyController.makeAnnouncements);
+router.delete("/deleteannouncement/:annid/:facid",isAuth,facultyController.deleteAnnouncements);
 router.get("/viewann/:id",facultyController.viewyourann);
 module.exports=router;
 

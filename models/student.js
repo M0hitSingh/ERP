@@ -15,7 +15,7 @@ const studentSchema = new schema({
     require: true,
   },
   sem: {
-    type: String,
+    type: Number,
   },
   year: {
     type: Number,

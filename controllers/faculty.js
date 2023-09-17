@@ -12,21 +12,26 @@ const  excelToJson = require("convert-excel-to-json");
 
 exports.addAttendance = async (req,res,next)=>{
   try{
-    const {arrayP,date,subject,arrayA} = req.body;
+    const {sem,arrayP,date,subject,arrayA} = req.body;
     for(var i=0;i<arrayP.length;i++)
     {
-     const obj ={ date: date, subject: subject, AorP:'P'};
-      const updateattendance=await Attendance.findOneAndUpdate(
-        { student:arrayP[i]},
-        {$push:{ "attendance" : [obj]}},
-        {
-          upsert:true
-        }
-     );
-    //  console.log(updateattendance);
-      updateattendance.totalP +=1;
-      updateattendance.totalpercent = (updateattendance.totalP/(updateattendance.attendance.length+1))*100;
-      // console.log(updateattendance.totalP,updateattendance.attendance.length,updateattendance.totalpercent);
+    //  const obj ={ date: date, subject: subject, AorP:'P'};
+     const updateattendance=await Attendance.findOneAndUpdate({ student:arrayP[i]},{},{upsert:true, new: true})
+     const index = updateattendance.semWiseAtt.findIndex((att=>att.sem == sem))
+     if(index== -1)
+     {
+      updateattendance.semWiseAtt.push({sem:sem})
+     }
+     const attobj = updateattendance.semWiseAtt.find(att=>(att.sem == sem));
+     const subindex = attobj.attendance.findIndex(att=>(att.subject == subject))
+     if(subindex== -1)
+     {
+      attobj.attendance.push({subject:subject})
+     }
+     const subatt = attobj.attendance.find(att=>(att.subject == subject))
+     subatt.P.push(date);
+    //  attobj.attendance.push(obj);
+     // console.log(updateattendance);
       await updateattendance.save();
     }
     for(var i=0;i<arrayA.length;i++)
@@ -77,15 +82,12 @@ exports.addresults = async(req,res,next)=>{
     
     // const array = sheet.Marks;
     // // }
-    const ex = await Exam.findByIdAndUpdate(exam,
-      {$set:{maxMarks: maxmarks}}
-    )
     for(var i=0;i<array.length;i++)
     {
-      const stu = await Student.findOne({rollno:array[i].rollno});
+     // const stu = await Student.findOne({rollno:array[i].rollno});
       const updateresult = await Result.findOneAndUpdate(
-        { student:stu._id},
-        { $push:{ "scores" : [{ sem: sem, exam: exam, subject: subject, score: array[i].score}]}},
+        { student:array[i].student},
+        { $push:{ "scores":[{ sem: sem, exam: exam, subject: subject, score: array[i].score,maxmarks:maxmarks}]}},
         { upsert:true}
       )
     }
@@ -161,6 +163,8 @@ exports.makeAnnouncements = async(req,res,next)=>{
         $sort: { createdAt : -1 },
      }}
     )
+    ann.madeby=fac.fullname;
+    await ann.save();
     return res.status(201).json("done");
   }
   catch(err){

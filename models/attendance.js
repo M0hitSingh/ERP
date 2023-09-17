@@ -6,17 +6,19 @@ const attendanceSchema = new schema({
     type:schema.Types.ObjectId,
     ref:"student"
   },
-  attendance:[{
-    date: Date,
-    subject:schema.Types.ObjectId ,
-    AorP: String
-  }],
 
-  totalP:{
-    type:Number,
-    default:0
-  },
-  totalpercent:Number
+  semWiseAtt:[{
+    sem:Number,
+
+    attendance:[{
+      subject:{
+        type:schema.Types.ObjectId,
+        ref:'subject'
+      },     
+      P:[Date],
+      A:[Date]
+    }],
+  }]
 })
 
 module.exports = mongoose.model("attendance",attendanceSchema);
