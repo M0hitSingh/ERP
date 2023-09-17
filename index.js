@@ -26,7 +26,7 @@ app.use((error, req, res, next) => {
   res.status(status).json({ message: message, data: data });
 });
 
-
+mongoose.set('strictQuery', false);
 mongoose.connect(process.env.CONNECT_TO_DB)
 .then(result => {
     app.listen(process.env.PORT);

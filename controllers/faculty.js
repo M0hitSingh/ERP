@@ -40,7 +40,7 @@ exports.addAttendance = async (req,res,next)=>{
          }
       );
         updateattendance.totalpercent = (updateattendance.totalP/(updateattendance.attendance.length+1))*100;
-        // console.log(updateattendance.totalP,updateattendance.attendance.length)
+        console.log(updateattendance.totalP,updateattendance.attendance.length)
         await updateattendance.save();
      }
 
